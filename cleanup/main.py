@@ -32,6 +32,9 @@ def main():
     cluster = open("protein_cluster","w")
     cluster.write("time, number of proteins in clusters\n")
 
+    rdf_protein = open("rdf_protein","w")
+    rdf_protein.write("bin, g(r)")
+
     # go through the file frame by frame
     for frame in range(Nframes):
         #read the frame, unwrapping periodic coordinates
@@ -53,19 +56,35 @@ def main():
         # calculate the number of proteins in clusters
         protein_number = protein_clusters(atoms)
 
+        # calculate the radial distribution function
+        bins = 20
+        g_of_r = np.zeros(bins)
+        volumes = np.zeros(bins)
+        box_size = 20.0
+        box_volume = 20.0**3
+        dr = box_size/bins
+        radii = np.linspace(0.0, bins * dr, bins)
+        proteins = rdf(atoms,10,g_of_r,volumes,radii)
         # output some results
         ouf_rg.write("%i %.5f\n"%(frame+1,Rg) )
         gt.write("%i %.5f\n"%(time,Rg))
         polymer.write("%i %i\n"%(time,polymer_number))
         cluster.write("%i %i\n"%(time,protein_number))
 
+    for i, value in enumerate(g_of_r):
+        print("value is " + str(value))
+        print("volume is " + str(volumes[i]))
+        #g_of_r[i] = (value/volumes[i])
+        #g_of_r[i] = (value/volumes[i])*(box_volume/len(proteins))
+        #rdf_protein.write("%i %.5f\n"%(radii[i],g_of_r[i]))
     # close the files
+
     inf.close()
     ouf_rg.close()
     gt.close()
     polymer.close()
     cluster.close()
-
+    rdf_protein.close()
 
 # Finished!
 if __name__ == "__main__":

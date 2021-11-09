@@ -15,7 +15,7 @@
 
 import numpy as np
 import operator
-
+import matplotlib.pyplot as plt
 
 
 class Atom:
@@ -128,7 +128,6 @@ def radius_of_gyration(atoms,L):
     return np.sqrt( Rg2 )
 
 
-
 def bound_polymer(atoms):
     """
     returns number of proteins bound to polymer
@@ -164,6 +163,52 @@ def protein_clusters(atoms):
                 count += 1
                 break
     return count
+
+def volume(radius):
+    return 4/3*np.pi*radius**3
+
+
+
+def rdf(atoms,bins,g_of_r,volumes,radii):
+    box_size = 20.0
+    box_volume = 20.0**3
+    dr = box_size/bins
+    #radii = np.linspace(0.0, bins * dr, bins)
+
+    #type = input("Which rdf? :"
+    proteins = []
+    distances = []
+
+    for i in range(len(atoms)):
+        if atoms[i].type == int(2):
+            proteins.append(atoms[i])
+    for i, protein in enumerate(proteins):
+        for j in range(bins):
+            r1 = j*dr
+            r2 = r1 + dr
+            v1 = volume(r1)
+            v2 = volume(r2)
+            volumes[j] += v2 - v1
+        for protein2 in proteins[i:]:
+            sep = Atom.sep(protein,protein2)
+            index = int(sep / dr)
+
+            print("index is " + str(index))
+            if 0 < index < bins:
+                g_of_r[index] += 2
+      ### normalise
+    return proteins
+
+
+      ## plot the function
+    """
+    fix, ax = plt.subplots(figsize = (10,10))
+    ax.plot(radii,g_of_r)
+    ax.set_xlabel("radii")
+    ax.set_ylabel("g(r)")
+    plt.show()
+    """
+
 
 
 # Finished!
