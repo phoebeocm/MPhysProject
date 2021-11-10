@@ -78,7 +78,9 @@ def main():
         gt.write("%i %.5f\n"%(time,Rg))
         polymer.write("%i %i\n"%(time,polymer_number))
         cluster.write("%i %i\n"%(time,protein_number))
-
+    print(g_of_r_pp)
+    print(g_of_r_pc)
+    print(g_of_r_cc)
     for i, value in enumerate(g_of_r_pp):
 
         #g_of_r[i] = (value/volumes[i])

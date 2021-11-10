@@ -16,6 +16,7 @@
 import numpy as np
 import operator
 import matplotlib.pyplot as plt
+#from averages import *
 
 
 class Atom:
@@ -106,10 +107,24 @@ def lines_in_file(filename):
 
     return i + 1
 
+def protein_list(atoms):
+    proteins = []
+    for i in range(len(atoms)): #
+        if atoms[i].type == int(2):
+            proteins.append(atoms[i])
+    return proteins
+
+def polymer_list(atoms):
+    polymer = []
+    for i in range(len(atoms)): #
+        if atoms[i].type == int(1):
+            polymer.append(atoms[i])
+    return polymer
+
 
 def radius_of_gyration(atoms,L):
-    """ Calculate the radius of gytation -- Rg^2 = (1/N) sum ( r_k - r_mean)^2
-    remember to unwrap periodic boundaries """
+    #Calculate the radius of gytation -- Rg^2 = (1/N) sum ( r_k - r_mean)^2
+    #remember to unwrap periodic boundaries "
 
     # get mean position
     r_mean = np.zeros(3,dtype=np.float64)
@@ -133,13 +148,8 @@ def bound_polymer(atoms):
     returns number of proteins bound to polymer
     """
     count = 0
-    proteins = []
-    polymer = []
-    for i in range(len(atoms)): #
-        if atoms[i].type == int(1):
-            polymer.append(atoms[i])
-        elif atoms[i].type == int(2):
-            proteins.append(atoms[i])
+    proteins = protein_list(atoms)
+    polymer = polymer_list(atoms)
     for i in proteins:
         for j in polymer:
             if Atom.sep(i,j) < 1.8:
@@ -153,10 +163,8 @@ def protein_clusters(atoms):
     returns the number of proteins in clusters
     """
     count = 0
-    proteins = []
-    for i in range(len(atoms)):
-        if atoms[i].type == int(2):
-            proteins.append(atoms[i])
+    proteins = protein_list(atoms)
+    polymer = polymer_list(atoms)
     for i in range(len(proteins)):
         for j in range(i+1,len(proteins)):
             if Atom.sep(proteins[i],proteins[j]) < 1.8:
@@ -167,24 +175,17 @@ def protein_clusters(atoms):
 def volume(radius):
     return 4/3*np.pi*radius**3
 
-
-
-def rdf(atoms,bins, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes):
+def rdf(atoms, bins, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes):
 
     box_size = 10.0
     box_volume = box_size**3
     dr = 10.0/bins # or 1.8/bins
     radii = np.linspace(0.0, bins * dr, bins)
 
-    proteins = []
-    polymers = []
-
     ## find the protein and polymer lists
-    for i in range(len(atoms)):
-        if atoms[i].type == int(2):
-            proteins.append(atoms[i])
-        elif atoms[i].type == int(1):
-            polymers.append(atoms[i])
+    proteins = protein_list(atoms)
+    polymers = polymer_list(atoms)
+
     ## calculate protein-protein
     for i in range(len(proteins)):
         # find shell volumes
