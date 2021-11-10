@@ -14,7 +14,7 @@
 
 
 import numpy as np
-#import operator
+import operator
 import matplotlib.pyplot as plt
 #from averages import *
 
@@ -173,9 +173,9 @@ def volume(radius):
 
 def rdf(atoms, bins, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes):
 
-    box_size = 10.0
+    box_size = 35.0 #10.0
     box_volume = box_size**3
-    dr = 10.0/bins # or 1.8/bins
+    dr = box_size/bins # or 1.8/bins
     radii = np.linspace(0.0, bins * dr, bins)
 
     ## find the protein and polymer lists

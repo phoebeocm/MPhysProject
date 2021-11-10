@@ -239,7 +239,7 @@ def combo_plot(Rgfile, polymerfile, proteinfile):
 
 
 #combo_plot("gyration_time","polymer_bound","protein_cluster")
-#rdf_plot("rdf_protein", "rdf_polymer", "rdf_cc")
+rdf_plot("rdf_protein", "rdf_polymer", "rdf_cc")
 #gyration_time_plot("gyration_time")
 #polymer_plot("polymer_bound")
 #cluster_plot("protein_cluster")
