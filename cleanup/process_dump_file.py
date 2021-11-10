@@ -169,45 +169,54 @@ def volume(radius):
 
 
 
-def rdf(atoms,bins,g_of_r,volumes,radii):
-    box_size = 20.0
-    box_volume = 20.0**3
-    dr = box_size/bins
-    #radii = np.linspace(0.0, bins * dr, bins)
+def rdf(atoms,bins, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes):
 
-    #type = input("Which rdf? :"
+    box_size = 10.0
+    box_volume = box_size**3
+    dr = 10.0/bins # or 1.8/bins
+    radii = np.linspace(0.0, bins * dr, bins)
+
     proteins = []
-    distances = []
+    polymers = []
 
+    ## find the protein and polymer lists
     for i in range(len(atoms)):
         if atoms[i].type == int(2):
             proteins.append(atoms[i])
-    for i, protein in enumerate(proteins):
+        elif atoms[i].type == int(1):
+            polymers.append(atoms[i])
+    ## calculate protein-protein
+    for i in range(len(proteins)):
+        # find shell volumes
         for j in range(bins):
             r1 = j*dr
             r2 = r1 + dr
             v1 = volume(r1)
             v2 = volume(r2)
-            volumes[j] += v2 - v1
-        for protein2 in proteins[i:]:
-            sep = Atom.sep(protein,protein2)
+            shell_volume = v2 - v1
+            volumes[j] += shell_volume
+
+        for j in range(i+1,len(proteins)):
+            sep = Atom.sep(proteins[i],proteins[j])
             index = int(sep / dr)
-
-            print("index is " + str(index))
             if 0 < index < bins:
-                g_of_r[index] += 2
-      ### normalise
-    return proteins
+                g_of_r_pp[index] += 2
 
+        for j in range(len(polymers)):
+            sep = Atom.sep(proteins[i],polymers[j])
+            index = int(sep / dr)
+            if 0 < index < bins:
+                g_of_r_pc[index] += 2
+    # persistence length?
+    for i, polymer in enumerate(polymers):
+        for polymer2 in polymers[i:]:
+            sep = Atom.sep(polymer,polymer2)
+            if sep > 4.0:
+                index = int(sep/dr)
+                if 0 < index < bins:
+                    g_of_r_cc[index] += 2
 
-      ## plot the function
-    """
-    fix, ax = plt.subplots(figsize = (10,10))
-    ax.plot(radii,g_of_r)
-    ax.set_xlabel("radii")
-    ax.set_ylabel("g(r)")
-    plt.show()
-    """
+    return proteins, polymers, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes, box_volume, radii
 
 
 

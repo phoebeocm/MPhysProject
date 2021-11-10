@@ -33,7 +33,20 @@ def main():
     cluster.write("time, number of proteins in clusters\n")
 
     rdf_protein = open("rdf_protein","w")
-    rdf_protein.write("bin, g(r)")
+    rdf_protein.write("bin, g(r)\n")
+
+    rdf_polymer = open("rdf_polymer", "w")
+    rdf_polymer.write("bin, g(r)\n")
+
+    rdf_cc = open("rdf_cc", "w")
+    rdf_cc.write("bin, g(r)\n")
+
+    ## info for plotting rdf
+    bins = 20
+    g_of_r_pp = np.zeros(bins)
+    g_of_r_pc = np.zeros(bins)
+    g_of_r_cc = np.zeros(bins)
+    volumes = np.zeros(bins)
 
     # go through the file frame by frame
     for frame in range(Nframes):
@@ -57,26 +70,28 @@ def main():
         protein_number = protein_clusters(atoms)
 
         # calculate the radial distribution function
-        bins = 20
-        g_of_r = np.zeros(bins)
-        volumes = np.zeros(bins)
-        box_size = 20.0
-        box_volume = 20.0**3
-        dr = box_size/bins
-        radii = np.linspace(0.0, bins * dr, bins)
-        proteins = rdf(atoms,10,g_of_r,volumes,radii)
+
+        proteins,polymers, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes, box_volume, radii = rdf(atoms,bins, g_of_r_pp, g_of_r_pc, g_of_r_cc,  volumes)
+
         # output some results
         ouf_rg.write("%i %.5f\n"%(frame+1,Rg) )
         gt.write("%i %.5f\n"%(time,Rg))
         polymer.write("%i %i\n"%(time,polymer_number))
         cluster.write("%i %i\n"%(time,protein_number))
 
-    for i, value in enumerate(g_of_r):
-        print("value is " + str(value))
-        print("volume is " + str(volumes[i]))
+    for i, value in enumerate(g_of_r_pp):
+
         #g_of_r[i] = (value/volumes[i])
-        #g_of_r[i] = (value/volumes[i])*(box_volume/len(proteins))
-        #rdf_protein.write("%i %.5f\n"%(radii[i],g_of_r[i]))
+        g_of_r_pp[i] = (value/volumes[i])*(box_volume/len(proteins))
+        rdf_protein.write("%i %.5f\n"%(radii[i],g_of_r_pp[i]))
+
+    for i, value in enumerate(g_of_r_pc):
+        g_of_r_pc[i] = (value/volumes[i])*(box_volume/len(polymers)) #should I divide by prots or pols?
+        rdf_polymer.write("%i %.5f\n"%(radii[i],g_of_r_pc[i]))
+
+    for i, value in enumerate(g_of_r_cc):
+        g_of_r_cc[i] = (value/volumes[i])*(box_volume/len(polymers)) # divide by what?
+        rdf_cc.write("%i %.5f\n"%(radii[i],g_of_r_cc[i]))
     # close the files
 
     inf.close()
@@ -85,6 +100,8 @@ def main():
     polymer.close()
     cluster.close()
     rdf_protein.close()
+    rdf_polymer.close()
+    rdf_cc.close()
 
 # Finished!
 if __name__ == "__main__":
