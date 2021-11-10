@@ -241,8 +241,29 @@ def combo_plot(Rgfile, polymerfile, proteinfile):
     return protein_list, polymer_list, Rg_list, timestep
 
 
-combo_plot("gyration_time","polymer_bound","protein_cluster")
-rdf_plot("rdf_protein", "rdf_polymer", "rdf_cc")
+#combo_plot("gyration_time","polymer_bound","protein_cluster")
+#rdf_plot("rdf_protein", "rdf_polymer", "rdf_cc")
 #gyration_time_plot("gyration_time")
 #polymer_plot("polymer_bound")
 #cluster_plot("protein_cluster")
+def averages_plot(infile):
+    inf = open(infile,'r')
+    # read first line of the file to skip titles
+    line = inf.readline()
+    # create plotting list
+    protein_attraction = []
+    averages = []
+    # find number of lines in our gyration-time file
+    line_number = process.lines_in_file(infile)
+
+    # loop over the rest of the lines in the g-t file to populate our lists
+    for i in range(line_number-1):
+        line = inf.readline()
+        line = line.split()
+        #protein_attraction.append(int(line[0]))
+        #averages.append(np.float64(line[1]))
+
+    inf.close()
+    fig, ax = plt.subplots(figsize = (10,10))
+    ax.plot(protein_attraction,averages))
+    plt.show()
