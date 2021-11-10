@@ -78,4 +78,4 @@ def easy_mean(pol_attraction, prot_attraction):
     total_file.write("%s %.5f %.5f\n"%(prot_attraction, mean, standard))
     total_file.close()
 
-easy_mean(1.0, 0.5)
+easy_mean(1.0, 1.0)

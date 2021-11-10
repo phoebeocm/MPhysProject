@@ -250,7 +250,6 @@ def averages_plot(infile):
     averagesfilename = infile
     inf = open(averagesfilename,'r')
     # read first line of the file to skip titles
-    line = inf.readline()
     # create plotting list
     protein_attraction = []
     averages = []
@@ -259,16 +258,19 @@ def averages_plot(infile):
     line_number = process.lines_in_file(infile)
 
     # loop over the rest of the lines in the g-t file to populate our lists
-    for i in range(line_number-1):
+    for i in range(line_number):
         line = inf.readline()
         line = line.split()
         protein_attraction.append(np.float64(line[0]))
         averages.append(np.float64(line[1]))
         standard.append(np.float64(line[2]))
-
+    print(protein_attraction)
 
     inf.close()
+    plt.xlabel("Protein-protein attraction")
+    plt.ylabel("Average number of proteins bound to other proteins")
+    plt.title("Average number of proteins in clusters for 1.0 polymer-protein attraction")
     plt.errorbar(protein_attraction, averages, standard, linestyle='None', marker='^')
     plt.show()
 
-averages_plot('averages_etc.0')
+averages_plot('averages_file_polymer_attraction_1.0')
