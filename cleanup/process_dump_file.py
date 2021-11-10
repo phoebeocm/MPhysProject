@@ -14,8 +14,9 @@
 
 
 import numpy as np
-import operator
-
+#import operator
+import matplotlib.pyplot as plt
+#from averages import *
 
 
 class Atom:
@@ -96,7 +97,6 @@ def readframe_unwrap(infile,N):
 
     return atoms,L,timestep
 
-
 def lines_in_file(filename):
     """ Get the number of lines in the file """
 
@@ -106,10 +106,23 @@ def lines_in_file(filename):
 
     return i + 1
 
+def protein_list(atoms):
+    proteins = []
+    for i in range(len(atoms)): #
+        if atoms[i].type == int(2):
+            proteins.append(atoms[i])
+    return proteins
+
+def polymer_list(atoms):
+    polymer = []
+    for i in range(len(atoms)): #
+        if atoms[i].type == int(1):
+            polymer.append(atoms[i])
+    return polymer
 
 def radius_of_gyration(atoms,L):
-    """ Calculate the radius of gytation -- Rg^2 = (1/N) sum ( r_k - r_mean)^2
-    remember to unwrap periodic boundaries """
+    #Calculate the radius of gytation -- Rg^2 = (1/N) sum ( r_k - r_mean)^2
+    #remember to unwrap periodic boundaries "
 
     # get mean position
     r_mean = np.zeros(3,dtype=np.float64)
@@ -127,20 +140,13 @@ def radius_of_gyration(atoms,L):
 
     return np.sqrt( Rg2 )
 
-
-
 def bound_polymer(atoms):
     """
     returns number of proteins bound to polymer
     """
     count = 0
-    proteins = []
-    polymer = []
-    for i in range(len(atoms)): #
-        if atoms[i].type == int(1):
-            polymer.append(atoms[i])
-        elif atoms[i].type == int(2):
-            proteins.append(atoms[i])
+    proteins = protein_list(atoms)
+    polymer = polymer_list(atoms)
     for i in proteins:
         for j in polymer:
             if Atom.sep(i,j) < 1.8:
@@ -148,22 +154,67 @@ def bound_polymer(atoms):
                 break
     return count
 
-
 def protein_clusters(atoms):
     """
     returns the number of proteins in clusters
     """
     count = 0
-    proteins = []
-    for i in range(len(atoms)):
-        if atoms[i].type == int(2):
-            proteins.append(atoms[i])
+    proteins = protein_list(atoms)
+    polymer = polymer_list(atoms)
     for i in range(len(proteins)):
         for j in range(i+1,len(proteins)):
             if Atom.sep(proteins[i],proteins[j]) < 1.8:
                 count += 1
                 break
     return count
+
+def volume(radius):
+    return 4/3*np.pi*radius**3
+
+def rdf(atoms, bins, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes):
+
+    box_size = 10.0
+    box_volume = box_size**3
+    dr = 10.0/bins # or 1.8/bins
+    radii = np.linspace(0.0, bins * dr, bins)
+
+    ## find the protein and polymer lists
+    proteins = protein_list(atoms)
+    polymers = polymer_list(atoms)
+
+    ## calculate protein-protein
+    for i in range(len(proteins)):
+        # find shell volumes
+        for j in range(bins):
+            r1 = j*dr
+            r2 = r1 + dr
+            v1 = volume(r1)
+            v2 = volume(r2)
+            shell_volume = v2 - v1
+            volumes[j] += shell_volume
+
+        for j in range(i+1,len(proteins)):
+            sep = Atom.sep(proteins[i],proteins[j])
+            index = int(sep / dr)
+            if 0 < index < bins:
+                g_of_r_pp[index] += 2
+
+        for j in range(len(polymers)):
+            sep = Atom.sep(proteins[i],polymers[j])
+            index = int(sep / dr)
+            if 0 < index < bins:
+                g_of_r_pc[index] += 2
+    # persistence length?
+    for i, polymer in enumerate(polymers):
+        for polymer2 in polymers[i:]:
+            sep = Atom.sep(polymer,polymer2)
+            if sep > 4.0:
+                index = int(sep/dr)
+                if 0 < index < bins:
+                    g_of_r_cc[index] += 2
+
+    return proteins, polymers, g_of_r_pp, g_of_r_pc, g_of_r_cc, volumes, box_volume, radii
+
 
 
 # Finished!
