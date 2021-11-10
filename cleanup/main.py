@@ -2,13 +2,16 @@ from process_dump_file import Atom
 from process_dump_file import *
 import numpy as np
 
-
 ############################################################################
 #### Start of the main program
 #print('provide input file name')
 #dumpfilename = input()
 def main():
-    dumpfilename = 'dump.DNA+proteins'   # this is hardcoded here, could instead read as command line argument
+    #dumpfilename = 'dump.DNA+proteins'   # this is hardcoded here, could instead read as command line argument
+    pol_attraction = input("What's your polymer-protein attraction? ")
+    prot_attraction = input("What's your protein-protein attraction? ")
+    dumpfilename = 'dump.pp_%s_pc_%s' % (prot_attraction, pol_attraction)
+    print(dumpfilename)
     Natoms = 700   # this is hardcoded here, could instead read as command line argument
 
     outfile_Rg = 'r_g_1.dat'
@@ -104,6 +107,7 @@ def main():
     rdf_protein.close()
     rdf_polymer.close()
     rdf_cc.close()
+
 
 # Finished!
 if __name__ == "__main__":
