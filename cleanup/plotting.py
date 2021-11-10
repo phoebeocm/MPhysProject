@@ -217,9 +217,6 @@ def combo_plot(Rgfile, polymerfile, proteinfile):
     inf.close()
 
 
-    #print(len(polymer_list))
-    #print(len(Rg_list))
-    #print(len(timestep))
 
 
     #plot graph

@@ -14,7 +14,7 @@
 
 
 import numpy as np
-import operator
+#import operator
 import matplotlib.pyplot as plt
 #from averages import *
 
@@ -97,7 +97,6 @@ def readframe_unwrap(infile,N):
 
     return atoms,L,timestep
 
-
 def lines_in_file(filename):
     """ Get the number of lines in the file """
 
@@ -121,7 +120,6 @@ def polymer_list(atoms):
             polymer.append(atoms[i])
     return polymer
 
-
 def radius_of_gyration(atoms,L):
     #Calculate the radius of gytation -- Rg^2 = (1/N) sum ( r_k - r_mean)^2
     #remember to unwrap periodic boundaries "
@@ -142,7 +140,6 @@ def radius_of_gyration(atoms,L):
 
     return np.sqrt( Rg2 )
 
-
 def bound_polymer(atoms):
     """
     returns number of proteins bound to polymer
@@ -156,7 +153,6 @@ def bound_polymer(atoms):
                 count += 1
                 break
     return count
-
 
 def protein_clusters(atoms):
     """

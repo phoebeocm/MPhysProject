@@ -36,21 +36,21 @@ def main():
     cluster = open("protein_cluster_pp%s_pc%s" %(prot_attraction, pol_attraction),"w")
     cluster.write("time, number of proteins in clusters\n")
 
-    #rdf_protein = open("rdf_protein","w")
-    #rdf_protein.write("bin, g(r)\n")
+    rdf_protein = open("rdf_protein","w")
+    rdf_protein.write("bin, g(r)\n")
 
-    #rdf_polymer = open("rdf_polymer", "w")
-    #rdf_polymer.write("bin, g(r)\n")
+    rdf_polymer = open("rdf_polymer", "w")
+    rdf_polymer.write("bin, g(r)\n")
 
-    #rdf_cc = open("rdf_cc", "w")
-    #rdf_cc.write("bin, g(r)\n")
+    rdf_cc = open("rdf_cc", "w")
+    rdf_cc.write("bin, g(r)\n")
 
     ## info for plotting rdf
-    #bins = 20
-    #g_of_r_pp = np.zeros(bins)
-    #g_of_r_pc = np.zeros(bins)
-    #g_of_r_cc = np.zeros(bins)
-    #volumes = np.zeros(bins)
+    bins = 20
+    g_of_r_pp = np.zeros(bins)
+    g_of_r_pc = np.zeros(bins)
+    g_of_r_cc = np.zeros(bins)
+    volumes = np.zeros(bins)
 
     # go through the file frame by frame
     for frame in range(Nframes):
@@ -88,7 +88,7 @@ def main():
     gt.close()
     polymer.close()
     cluster.close()
-    """
+
     for i, value in enumerate(g_of_r_pp):
 
         #g_of_r[i] = (value/volumes[i])
@@ -108,9 +108,9 @@ def main():
     rdf_protein.close()
     rdf_polymer.close()
     rdf_cc.close()
-    """
+
     # Can now reach into the bound values we created above to calculate the average
-    #polymer = open("polymer_bound_pp%s_pc%s" %(prot_attraction,pol_attraction),"r")
+    polymer = open("polymer_bound_pp%s_pc%s" %(prot_attraction,pol_attraction),"r")
 
     easy_mean(pol_attraction,prot_attraction)
 
