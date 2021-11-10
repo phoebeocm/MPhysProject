@@ -111,8 +111,8 @@ def main():
     """
     # Can now reach into the bound values we created above to calculate the average
     #polymer = open("polymer_bound_pp%s_pc%s" %(prot_attraction,pol_attraction),"r")
-    cluster = open("protein_cluster_pp%s_pc%s" %(prot_attraction, pol_attraction),"r")
-    easy_mean(cluster,pol_attraction,prot_attraction)
+
+    easy_mean(pol_attraction,prot_attraction)
 
     #polymer.close()
     cluster.close()

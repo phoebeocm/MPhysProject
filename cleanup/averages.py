@@ -71,9 +71,11 @@ def easy_mean(pol_attraction, prot_attraction):
         standard_dev.append(protein_list[i])
     standard = np.std(standard_dev)
     mean = particle_val/(len(protein_list) - (equilibrium_point+1))
-
+    print(mean)
+    print(standard)
+    print(prot_attraction)
     total_file = open("averages_file_polymer_attraction_%s"%(pol_attraction),"a")
-    total_file.write("%.5f %.5f %.5f\n"%(prot_attraction, mean, standard))
+    total_file.write("%s %.5f %.5f\n"%(prot_attraction, mean, standard))
     total_file.close()
 
-easy_mean(1.0,1.0)
+easy_mean(1.0, 0.5)

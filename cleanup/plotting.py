@@ -247,12 +247,14 @@ def combo_plot(Rgfile, polymerfile, proteinfile):
 #polymer_plot("polymer_bound")
 #cluster_plot("protein_cluster")
 def averages_plot(infile):
-    inf = open(infile,'r')
+    averagesfilename = infile
+    inf = open(averagesfilename,'r')
     # read first line of the file to skip titles
     line = inf.readline()
     # create plotting list
     protein_attraction = []
     averages = []
+    standard = []
     # find number of lines in our gyration-time file
     line_number = process.lines_in_file(infile)
 
@@ -260,10 +262,13 @@ def averages_plot(infile):
     for i in range(line_number-1):
         line = inf.readline()
         line = line.split()
-        #protein_attraction.append(int(line[0]))
-        #averages.append(np.float64(line[1]))
+        protein_attraction.append(np.float64(line[0]))
+        averages.append(np.float64(line[1]))
+        standard.append(np.float64(line[2]))
+
 
     inf.close()
-    fig, ax = plt.subplots(figsize = (10,10))
-    ax.plot(protein_attraction,averages))
+    plt.errorbar(protein_attraction, averages, standard, linestyle='None', marker='^')
     plt.show()
+
+averages_plot('averages_etc.0')
